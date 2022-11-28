@@ -1,0 +1,65 @@
+#### 使用额外空间
+
+```
+class Solution {
+public:
+    bool isPalindrome(string s) {
+        int len = s.size();
+        string tmp;
+        for(auto c:s){
+            if(isalnum(c)){
+                tmp += tolower(c);
+            }
+        }
+        string tmp_rev(tmp.rbegin(),tmp.rend());
+        return tmp_rev == tmp;
+    }
+};
+```
+
+这个思路很容易想到，用一个新的字符串存储属于源字符串中属于字母和数字并且小写了的字符。然后反转后判断是否相同。这里可以学到两个函数，isalnum()可以返回判断传入的字符是否是字母或数字，如果不是就返回0。将字母小写可以直接使用tolower()函数，正如函数名一样。创建string时可以使用如下格式string s2(s1.rbegin(),s1.rend())，即使用两个指向同一字符串的不同位置的指针就可以复制两个指针之间的字符串，逆序的话就让指向字符串后面的指针作为第一个参数。begin与end 以及 rbegin与rend区别在于，begin和rend指向的相同，都为数据起始元素。而end指向的是最后一个元素的下一个空元素，rbegin则指向最后一个元素。
+
+```
+class Solution {
+public:
+    bool isPalindrome(string s) {
+        string tmp;
+        for(auto c:s){
+            if(isalnum(c)){
+                tmp += tolower(c);
+            }
+        }
+        int left=0,right=tmp.size()-1;
+        while(left<right){
+            if(tmp[left]!=tmp[right]) return false;
+            ++left;
+            --right;
+        }
+        return true;
+    }
+};
+```
+
+上面一种方法使用了两个额外的字符串，而该方法只是用一个额外字符串存储去掉符号的字符串，并通过双指针进行比较是否相同。
+
+#### 原地比较
+
+```
+class Solution {
+public:
+    bool isPalindrome(string s) {
+        int len =s.size();
+        int left = 0,right = len-1;
+        while(left<right){
+            while(!isalnum(s[left]) && left<right) left++;
+            while(!isalnum(s[right]) && left<right) right--;
+            if(tolower(s[left]) != tolower(s[right])) return false;
+            left++;
+            right--;
+        }
+        return true;
+    }
+};
+```
+
+使用双指针可以从两头同时开始进行对比，只需要在对比过程中用isalnum函数进行判断从而跳过符号字符即可，并且在判断字符是否相同时使用tolower转成小写字符。
